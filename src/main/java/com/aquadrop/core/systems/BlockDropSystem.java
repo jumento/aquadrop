@@ -66,7 +66,7 @@ public class BlockDropSystem extends EntityEventSystem<EntityStore, BreakBlockEv
 
         for (DropConfig config : drops) {
             if (probabilityService.shouldDrop(config.probability())) {
-                spawnDropToWorld(config.dropId(), pos, commandBuffer);
+                spawnDropToWorld(config.dropId(), config.quantity(), pos, commandBuffer);
             }
         }
     }
@@ -77,10 +77,10 @@ public class BlockDropSystem extends EntityEventSystem<EntityStore, BreakBlockEv
         return Query.and(Player.getComponentType());
     }
 
-    private void spawnDropToWorld(String dropId, Vector3i pos, CommandBuffer<EntityStore> commandBuffer) {
+    private void spawnDropToWorld(String dropId, int quantity, Vector3i pos, CommandBuffer<EntityStore> commandBuffer) {
         try {
             Constructor<?> ctor = ItemStack.class.getConstructor(String.class, int.class);
-            ItemStack dropItem = (ItemStack) ctor.newInstance(dropId, 1);
+            ItemStack dropItem = (ItemStack) ctor.newInstance(dropId, quantity);
 
             Vector3d dropPos = new Vector3d(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5);
             Holder<EntityStore>[] holders = ItemComponent.generateItemDrops(commandBuffer,

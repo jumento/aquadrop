@@ -29,6 +29,7 @@ public class AquaDropFormPage extends InteractiveCustomUIPage<AquaDropFormPage.F
         public String sourceId;
         public String dropId;
         public String prob;
+        public String quantity;
 
         public static final BuilderCodec<FormEventData> CODEC = BuilderCodec
                 .builder(FormEventData.class, FormEventData::new)
@@ -43,6 +44,9 @@ public class AquaDropFormPage extends InteractiveCustomUIPage<AquaDropFormPage.F
                 .add()
                 .append(new KeyedCodec<>("@Probability", Codec.STRING), (FormEventData o, String v) -> o.prob = v,
                         (FormEventData o) -> o.prob)
+                .add()
+                .append(new KeyedCodec<>("@Quantity", Codec.STRING), (FormEventData o, String v) -> o.quantity = v,
+                        (FormEventData o) -> o.quantity)
                 .add()
                 .build();
     }
@@ -67,7 +71,8 @@ public class AquaDropFormPage extends InteractiveCustomUIPage<AquaDropFormPage.F
                 .append("Action", "save")
                 .append("@SourceId", "#InputSourceId.Value")
                 .append("@DropId", "#InputDropId.Value")
-                .append("@Probability", "#InputProbability.Value"));
+                .append("@Probability", "#InputProbability.Value")
+                .append("@Quantity", "#InputQuantity.Value"));
 
         evt.addEventBinding(CustomUIEventBindingType.Activating, "#BtnCancel", new EventData()
                 .append("Action", "cancel"));
@@ -93,11 +98,16 @@ public class AquaDropFormPage extends InteractiveCustomUIPage<AquaDropFormPage.F
                     probability = Float.parseFloat(data.prob);
                 }
 
+                int quantity = 1;
+                if (data.quantity != null && !data.quantity.trim().isEmpty()) {
+                    quantity = Integer.parseInt(data.quantity);
+                }
+
                 // Call loader to save to JSON physically
                 new com.aquadrop.core.registry.LocalConfigLoader(
                         (com.aquadrop.core.registry.CustomDropRegistryImpl) AquaDrop.get().getRegistry(),
                         AquaDrop.get())
-                        .addAndSaveDropConfig(data.sourceId, data.dropId, probability, isBlockForm);
+                        .addAndSaveDropConfig(data.sourceId, data.dropId, probability, quantity, isBlockForm);
 
                 playerRef.sendMessage(Message.empty()
                         .insert("Drop saved successfully. (System has been automatically hot-reloaded).")

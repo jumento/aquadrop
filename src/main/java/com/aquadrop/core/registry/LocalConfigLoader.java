@@ -102,12 +102,14 @@ public class LocalConfigLoader {
             sampleBlock.addProperty("SourceId", "Example_Block_ID");
             sampleBlock.addProperty("DropId", "Example_Item_Drop_ID");
             sampleBlock.addProperty("Probability", 100.0f);
+            sampleBlock.addProperty("Quantity", 1);
             blockDrops.add(sampleBlock);
 
             JsonObject sampleMob = new JsonObject();
             sampleMob.addProperty("SourceId", "Example_Mob_ID");
             sampleMob.addProperty("DropId", "Example_Item_Drop_ID");
             sampleMob.addProperty("Probability", 25.5f);
+            sampleMob.addProperty("Quantity", 1);
             mobDrops.add(sampleMob);
 
             root.add("BlockDrops", blockDrops);
@@ -133,13 +135,14 @@ public class LocalConfigLoader {
                 String sourceId = drop.get("SourceId").getAsString();
                 String dropId = drop.get("DropId").getAsString();
                 float probability = drop.get("Probability").getAsFloat();
+                int quantity = drop.has("Quantity") ? drop.get("Quantity").getAsInt() : 1;
 
                 // Skip dummy examples
                 if (sourceId.equals("Example_Block_ID") || sourceId.equals("Example_Mob_ID")) {
                     continue;
                 }
 
-                DropConfig config = new DropConfig(sourceId, dropId, probability);
+                DropConfig config = new DropConfig(sourceId, dropId, probability, quantity);
 
                 if (isBlockDrop) {
                     registry.registerBlockDrop(config);
@@ -156,7 +159,7 @@ public class LocalConfigLoader {
      * Dynamically adds or updates a drop directly from the Admin UI to the json
      * file.
      */
-    public void addAndSaveDropConfig(String sourceId, String dropId, float probability, boolean isBlock) {
+    public void addAndSaveDropConfig(String sourceId, String dropId, float probability, int quantity, boolean isBlock) {
         if (!CONFIG_DIR.exists()) {
             CONFIG_DIR.mkdirs();
         }
@@ -196,6 +199,7 @@ public class LocalConfigLoader {
                 if (obj.get("SourceId").getAsString().equals(sourceId)
                         && obj.get("DropId").getAsString().equals(dropId)) {
                     obj.addProperty("Probability", probability);
+                    obj.addProperty("Quantity", quantity);
                     updated = true;
                     break;
                 }
@@ -207,6 +211,7 @@ public class LocalConfigLoader {
             newDrop.addProperty("SourceId", sourceId);
             newDrop.addProperty("DropId", dropId);
             newDrop.addProperty("Probability", probability);
+            newDrop.addProperty("Quantity", quantity);
             targetArray.add(newDrop);
         }
 

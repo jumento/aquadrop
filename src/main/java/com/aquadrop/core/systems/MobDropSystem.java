@@ -59,12 +59,12 @@ public class MobDropSystem extends DeathSystems.OnDeathSystem {
 
         for (DropConfig config : drops) {
             if (probabilityService.shouldDrop(config.probability())) {
-                dropItem(ref, config.dropId(), store, commandBuffer);
+                dropItem(ref, config.dropId(), config.quantity(), store, commandBuffer);
             }
         }
     }
 
-    private void dropItem(Ref<EntityStore> ref, String dropId, Store<EntityStore> store,
+    private void dropItem(Ref<EntityStore> ref, String dropId, int quantity, Store<EntityStore> store,
             CommandBuffer<EntityStore> commandBuffer) {
         try {
             TransformComponent transform = store.getComponent(ref,
@@ -76,7 +76,7 @@ public class MobDropSystem extends DeathSystems.OnDeathSystem {
             Vector3d dropPos = new Vector3d(pos.x, pos.y + 0.5, pos.z);
 
             Constructor<?> ctor = ItemStack.class.getConstructor(String.class, int.class);
-            ItemStack dropItem = (ItemStack) ctor.newInstance(dropId, 1);
+            ItemStack dropItem = (ItemStack) ctor.newInstance(dropId, quantity);
 
             Holder<EntityStore>[] holders = ItemComponent.generateItemDrops(commandBuffer,
                     Collections.singletonList(dropItem), dropPos,

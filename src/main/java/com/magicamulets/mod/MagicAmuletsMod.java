@@ -16,7 +16,8 @@ public class MagicAmuletsMod {
         DropConfig gemDrop = new DropConfig(
                 "Furniture_Village_Coffin",
                 "AquaAmulets_Magic_Fragment",
-                5.5f);
+                5.5f,
+                1);
         aquadropApi.registerBlockDrop(gemDrop);
 
         // 2. Drop por Matar: Los "Skeleton_Burnt_Alchemist" dejan caer un "dark_ring"
@@ -24,7 +25,8 @@ public class MagicAmuletsMod {
         DropConfig ringDrop = new DropConfig(
                 "Skeleton_Burnt_Alchemist",
                 "AquaAmulets_Dark_Ring",
-                30.0f);
+                30.0f,
+                1);
         aquadropApi.registerMobDrop(ringDrop);
 
         System.out.println("Magic Amulets ha registrado correctamente sus dependencias de loot.");

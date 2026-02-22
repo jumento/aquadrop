@@ -102,8 +102,9 @@ public class ZipConfigLoader {
                 String sourceId = drop.get("SourceId").getAsString();
                 String dropId = drop.get("DropId").getAsString();
                 float probability = drop.get("Probability").getAsFloat();
+                int quantity = drop.has("Quantity") ? drop.get("Quantity").getAsInt() : 1;
 
-                DropConfig config = new DropConfig(sourceId, dropId, probability);
+                DropConfig config = new DropConfig(sourceId, dropId, probability, quantity);
 
                 if (isBlockDrop) {
                     registry.registerBlockDrop(config);

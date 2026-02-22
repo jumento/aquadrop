@@ -64,7 +64,7 @@ public class AquaDropFormPage extends InteractiveCustomUIPage<AquaDropFormPage.F
         String title = isBlockForm ? "Add / Edit Block Drop" : "Add / Edit Mob Drop";
         cmd.set("#FormTitle.Text", title);
 
-        String placeholder = isBlockForm ? "E.g. Rock_Stone" : "E.g. Skeleton_Burnt_Alchemist";
+        String placeholder = isBlockForm ? "E.g. Example_Block_ID" : "E.g. Example_Mob_ID";
         cmd.set("#InputSourceId.PlaceholderText", placeholder);
 
         evt.addEventBinding(CustomUIEventBindingType.Activating, "#BtnSave", new EventData()
@@ -88,10 +88,10 @@ public class AquaDropFormPage extends InteractiveCustomUIPage<AquaDropFormPage.F
         if ("save".equals(data.action)) {
             try {
                 if (data.sourceId == null || data.sourceId.trim().isEmpty()) {
-                    data.sourceId = isBlockForm ? "Rock_Stone" : "Skeleton_Burnt_Alchemist";
+                    data.sourceId = isBlockForm ? "Example_Block_ID" : "Example_Mob_ID";
                 }
                 if (data.dropId == null || data.dropId.trim().isEmpty()) {
-                    data.dropId = "AquaAmulets_Magic_Fragment";
+                    data.dropId = "Example_Item_Drop_ID";
                 }
                 float probability = 100f;
                 if (data.prob != null && !data.prob.isEmpty()) {

@@ -32,12 +32,12 @@ Group {
         Group { Anchor: (Height: 10); }
 
         Label { Text: "Source (Entity or Block ID)"; Anchor: (Height: 25); Style: (FontSize: 16, TextColor: #96a9be); }
-        $C.@TextField #InputSourceId { FlexWeight: 1; PlaceholderText: "E.g. Skeleton_Burnt"; }
+        $C.@TextField #InputSourceId { FlexWeight: 1; PlaceholderText: "E.g. Example_Mob_ID"; }
 
         Group { Anchor: (Height: 15); }
 
         Label { Text: "Drop (Item ID)"; Anchor: (Height: 25); Style: (FontSize: 16, TextColor: #96a9be); }
-        $C.@TextField #InputDropId { FlexWeight: 1; PlaceholderText: "E.g. AquaAmulets_Magic_Fragment"; }
+        $C.@TextField #InputDropId { FlexWeight: 1; PlaceholderText: "E.g. Example_Item_Drop_ID"; }
 
         Group { Anchor: (Height: 15); }
 

@@ -23,15 +23,15 @@ public final class AquaDrop extends JavaPlugin {
     public AquaDrop(JavaPluginInit init) {
         super(init);
         instance = this;
+        // Initialize immediately so other mods can call getRegistry()
+        // regardless of plugin setup order.
+        this.registry = new CustomDropRegistryImpl();
+        this.probabilityService = new StandardProbability();
     }
 
     @Override
     protected void setup() {
         super.setup();
-
-        // Initialize Core Services
-        this.registry = new CustomDropRegistryImpl();
-        this.probabilityService = new StandardProbability();
 
         // Load configs from external Asset Zips (.json)
         new com.aquadrop.core.registry.ZipConfigLoader(

@@ -58,6 +58,8 @@ import com.aquadrop.api.CustomDropRegistry;
 CustomDropRegistry dropApi = AquaDrop.get().getRegistry();
 ```
 
+> **Load Order Safety**: The AquaDrop registry is initialized in the plugin constructor, not in `setup()`. This means `AquaDrop.get().getRegistry()` is guaranteed to return a valid, non-null registry regardless of which plugin initializes first. You do not need to declare a dependency or worry about plugin load order.
+
 ### 2. Registering a Block Drop
 
 Use `registerBlockDrop` to define what item should drop when a specific block is destroyed.

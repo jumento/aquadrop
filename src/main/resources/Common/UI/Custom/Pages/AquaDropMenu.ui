@@ -31,14 +31,6 @@ Group {
 
         Group { Anchor: (Height: 20); }
 
-        TextButton #BtnReload {
-            Text: "Live Reload (Json to Memory)";
-            FlexWeight: 1;
-            Style: @PrimaryButtonStyle;
-        }
-
-        Group { Anchor: (Height: 15); }
-
         TextButton #BtnBlockDrops {
             Text: "Add Block Drop";
             FlexWeight: 1;
@@ -49,6 +41,14 @@ Group {
 
         TextButton #BtnMobDrops {
             Text: "Add Mob Drop";
+            FlexWeight: 1;
+            Style: @PrimaryButtonStyle;
+        }
+
+        Group { Anchor: (Height: 15); }
+
+        TextButton #BtnReload {
+            Text: "Live Reload (Json to Memory)";
             FlexWeight: 1;
             Style: @PrimaryButtonStyle;
         }

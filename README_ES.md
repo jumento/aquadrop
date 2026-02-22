@@ -57,6 +57,8 @@ import com.aquadrop.api.CustomDropRegistry;
 CustomDropRegistry dropApi = AquaDrop.get().getRegistry();
 ```
 
+> **Seguridad en el Orden de Carga**: El registro de AquaDrop se inicializa en el constructor del plugin, no en `setup()`. Esto significa que `AquaDrop.get().getRegistry()` está garantizado a devolver un registro válido y no nulo independientemente de qué plugin se inicialice primero. No necesitas declarar una dependencia ni preocuparte por el orden de carga de plugins.
+
 ### 2. Registrando un Drop de Bloque
 
 Usa `registerBlockDrop` para definir qué ítem debe caer cuando se destruye un bloque específico.

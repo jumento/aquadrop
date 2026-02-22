@@ -28,7 +28,6 @@ public class AquaDropFormPage extends InteractiveCustomUIPage<AquaDropFormPage.F
                 public String action;
                 public String sourceId;
                 public String dropId;
-                // NumberField returns its value via Codec.FLOAT on the Activating event.
                 public float probability = 50f;
                 public float quantityRaw = 1f;
 
@@ -73,7 +72,7 @@ public class AquaDropFormPage extends InteractiveCustomUIPage<AquaDropFormPage.F
                 String placeholder = isBlockForm ? "E.g. Example_Block_ID" : "E.g. Example_Mob_ID";
                 cmd.set("#InputSourceId.PlaceholderText", placeholder);
 
-                // NumberField values are read directly at button press time via .Value binding.
+                // Read slider values at save time via .Value on the integrated NumberField.
                 evt.addEventBinding(CustomUIEventBindingType.Activating, "#BtnSave", new EventData()
                                 .append("Action", "save")
                                 .append("@SourceId", "#InputSourceId.Value")

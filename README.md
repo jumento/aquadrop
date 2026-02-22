@@ -1,6 +1,7 @@
 # AquaDrop API
 
 **Author:** jume
+
 AquaDrop is a powerful, lightweight, and highly optimized Drop Management API for Hytale. Built natively on Hytale's Entity Component System (ECS) architecture, it provides a standardized way for other mods to register custom loot drops for both block breaking and mob kills, handling all probability calculations securely and concurrently.
 
 ## Installation for Server Owners

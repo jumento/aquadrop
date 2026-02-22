@@ -93,14 +93,16 @@ public class AquaDropFormPage extends InteractiveCustomUIPage<AquaDropFormPage.F
                 if (data.dropId == null || data.dropId.trim().isEmpty()) {
                     data.dropId = "Example_Item_Drop_ID";
                 }
-                float probability = 100f;
+                // Sliders return the integer value as string; parse safely with integer
+                // fallback
+                float probability = 50f;
                 if (data.prob != null && !data.prob.isEmpty()) {
                     probability = Float.parseFloat(data.prob);
                 }
 
                 int quantity = 1;
                 if (data.quantity != null && !data.quantity.trim().isEmpty()) {
-                    quantity = Integer.parseInt(data.quantity);
+                    quantity = Math.max(1, Integer.parseInt(data.quantity));
                 }
 
                 // Call loader to save to JSON physically
@@ -114,10 +116,6 @@ public class AquaDropFormPage extends InteractiveCustomUIPage<AquaDropFormPage.F
                         .color("#FFD700"));
                 player.getPageManager().setPage(ref, store, Page.None);
 
-            } catch (NumberFormatException ex) {
-                playerRef.sendMessage(Message.empty()
-                        .insert("Error: Probability (" + data.prob + ") is invalid. Try 100.0, 50.5, etc.")
-                        .color("#FFD700"));
             } catch (Exception ex) {
                 playerRef.sendMessage(
                         Message.empty().insert("Fatal error saving drop: " + ex.getMessage()).color("#FFD700"));

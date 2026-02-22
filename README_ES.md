@@ -24,14 +24,16 @@ El formato debe ser exactamente el siguiente:
     {
       "SourceId": "Furniture_Village_Coffin",
       "DropId": "AquaAmulets_Magic_Fragment",
-      "Probability": 5.5
+      "Probability": 5.5,
+      "Quantity": 1
     }
   ],
   "MobDrops": [
     {
       "SourceId": "Skeleton_Burnt_Alchemist",
       "DropId": "AquaAmulets_Dark_Ring",
-      "Probability": 30.0
+      "Probability": 30.0,
+      "Quantity": 3
     }
   ]
 }
@@ -62,11 +64,12 @@ Usa `registerBlockDrop` para definir qué ítem debe caer cuando se destruye un 
 ```java
 import com.aquadrop.api.models.DropConfig;
 
-// Cuando un jugador rompe un "Furniture_Village_Coffin", hay un 5.5% de probabilidad de que caiga un "AquaAmulets_Magic_Fragment"
+// Cuando un jugador rompe un "Furniture_Village_Coffin", hay un 5.5% de probabilidad de que caiga 1 "AquaAmulets_Magic_Fragment"
 DropConfig gemDrop = new DropConfig(
     "Furniture_Village_Coffin",     // Source ID (ID del Bloque)
     "AquaAmulets_Magic_Fragment",   // Drop ID (ID del Ítem que se generará)
-    5.5f                            // Probabilidad (0.0f a 100.0f)
+    5.5f,                           // Probabilidad (0.0f a 100.0f)
+    1                               // Cantidad (ítems por evento de drop)
 );
 
 dropApi.registerBlockDrop(gemDrop);
@@ -77,11 +80,12 @@ dropApi.registerBlockDrop(gemDrop);
 Usa `registerMobDrop` para definir qué ítem debe caer cuando una entidad específica muere por cualquier causa.
 
 ```java
-// Cuando un "Skeleton_Burnt_Alchemist" muere, hay un 30.0% de probabilidad de que caiga un "AquaAmulets_Dark_Ring"
+// Cuando un "Skeleton_Burnt_Alchemist" muere, hay un 30.0% de probabilidad de que caigan 3 "AquaAmulets_Dark_Ring"
 DropConfig ringDrop = new DropConfig(
     "Skeleton_Burnt_Alchemist",     // Source ID (ID del Tipo de Entidad)
     "AquaAmulets_Dark_Ring",        // Drop ID
-    30.0f                           // Probabilidad
+    30.0f,                          // Probabilidad
+    3                               // Cantidad
 );
 
 dropApi.registerMobDrop(ringDrop);
@@ -95,8 +99,10 @@ El Record `DropConfig` es extremadamente estricto. Si intentas registrar una pro
 
 - **Nativo ECS**: Construido directamente sobre los sistemas de la API del Servidor de Hytale: `EntityEventSystem` y `DeathSystems.OnDeathSystem`.
 - **Alto Rendimiento**: Emplea `ConcurrentHashMap` para búsquedas instantáneas O(1) y `ThreadLocalRandom` para una evaluación de probabilidad segura en entornos multihilos.
-- **Seguridad Fail-Fast**: Utiliza la inmutabilidad de los `Record` de Java 25 para validar estrictamente las probabilidades (0.0f - 100.0f) en el instante mismo del registro, evitando errores silenciosos.
+- **Seguridad Fail-Fast**: Utiliza la inmutabilidad de los `Record` de Java 25 para validar estrictamente las probabilidades (0.0f - 100.0f) y cantidades (deben ser > 0) en el instante mismo del registro, evitando errores silenciosos.
+- **Control de Cantidad de Ítems**: Cada regla de drop soporta una cantidad configurable, permitiendo que caigan múltiples ítems en un solo evento.
 - **Registro Unificado**: Un único punto de acceso.
+- **Menú de Administración In-Game**: Menú visual accesible vía `/aquadrop config` para añadir y recargar reglas de drop sin reiniciar el servidor.
 
 ## Licencia
 

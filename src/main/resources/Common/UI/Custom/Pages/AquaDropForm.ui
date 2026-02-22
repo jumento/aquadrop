@@ -19,7 +19,7 @@ Group {
 
     Group #MainPanel {
         LayoutMode: Top;
-        Anchor: (Width: 450, Height: 600);
+        Anchor: (Width: 450, Height: 560);
         Background: #141c26(0.98);
         Padding: (Full: 20);
 
@@ -41,34 +41,24 @@ Group {
 
         Group { Anchor: (Height: 15); }
 
-        Label { Text: "Probability (%)"; Anchor: (Height: 25); Style: (FontSize: 16, TextColor: #96a9be); }
-        Group {
-            LayoutMode: Left;
-            Anchor: (Height: 30);
-            $C.@Slider #InputProbability {
-                Anchor: (Width: 300);
-                Value: 50;
-                Min: 0;
-                Max: 100;
-            }
-            Group { Anchor: (Width: 10); }
-            Label #LabelProbability { Text: "50"; Anchor: (Width: 40); Style: (FontSize: 15, TextColor: #ffffff, HorizontalAlignment: Left, VerticalAlignment: Center); }
+        Label { Text: "Probability (0 - 100)"; Anchor: (Height: 25); Style: (FontSize: 16, TextColor: #96a9be); }
+        $C.@SliderNumberField #InputProbability {
+            @Anchor = (Width: 380);
+            Value: 50;
+            Min: 0;
+            Max: 100;
+            NumberFieldContainerAnchor: (Width: 60);
         }
 
         Group { Anchor: (Height: 15); }
 
         Label { Text: "Quantity (items)"; Anchor: (Height: 25); Style: (FontSize: 16, TextColor: #96a9be); }
-        Group {
-            LayoutMode: Left;
-            Anchor: (Height: 30);
-            $C.@Slider #InputQuantity {
-                Anchor: (Width: 300);
-                Value: 1;
-                Min: 1;
-                Max: 100;
-            }
-            Group { Anchor: (Width: 10); }
-            Label #LabelQuantity { Text: "1"; Anchor: (Width: 40); Style: (FontSize: 15, TextColor: #ffffff, HorizontalAlignment: Left, VerticalAlignment: Center); }
+        $C.@SliderNumberField #InputQuantity {
+            @Anchor = (Width: 380);
+            Value: 1;
+            Min: 1;
+            Max: 100;
+            NumberFieldContainerAnchor: (Width: 60);
         }
 
         Group { FlexWeight: 1; }

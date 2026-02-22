@@ -24,29 +24,34 @@ public class AquaDropFormPage extends InteractiveCustomUIPage<AquaDropFormPage.F
 
     private final boolean isBlockForm;
 
+    // Stored server-side; updated via ValueChanged events from sliders.
+    private float currentProb = 50f;
+    private int currentQty = 1;
+
     public static class FormEventData {
         public String action;
         public String sourceId;
         public String dropId;
-        public String prob;
-        public String quantity;
+        // Slider values arrive via ValueChanged events (Codec.FLOAT).
+        public float sliderValue = 0f;
 
         public static final BuilderCodec<FormEventData> CODEC = BuilderCodec
                 .builder(FormEventData.class, FormEventData::new)
-                .append(new KeyedCodec<>("Action", Codec.STRING), (FormEventData o, String v) -> o.action = v,
+                .append(new KeyedCodec<>("Action", Codec.STRING),
+                        (FormEventData o, String v) -> o.action = v,
                         (FormEventData o) -> o.action)
                 .add()
-                .append(new KeyedCodec<>("@SourceId", Codec.STRING), (FormEventData o, String v) -> o.sourceId = v,
+                .append(new KeyedCodec<>("@SourceId", Codec.STRING),
+                        (FormEventData o, String v) -> o.sourceId = v,
                         (FormEventData o) -> o.sourceId)
                 .add()
-                .append(new KeyedCodec<>("@DropId", Codec.STRING), (FormEventData o, String v) -> o.dropId = v,
+                .append(new KeyedCodec<>("@DropId", Codec.STRING),
+                        (FormEventData o, String v) -> o.dropId = v,
                         (FormEventData o) -> o.dropId)
                 .add()
-                .append(new KeyedCodec<>("@Probability", Codec.STRING), (FormEventData o, String v) -> o.prob = v,
-                        (FormEventData o) -> o.prob)
-                .add()
-                .append(new KeyedCodec<>("@Quantity", Codec.STRING), (FormEventData o, String v) -> o.quantity = v,
-                        (FormEventData o) -> o.quantity)
+                .append(new KeyedCodec<>("@SliderValue", Codec.FLOAT),
+                        (FormEventData o, Float v) -> o.sliderValue = v,
+                        (FormEventData o) -> o.sliderValue)
                 .add()
                 .build();
     }
@@ -67,12 +72,20 @@ public class AquaDropFormPage extends InteractiveCustomUIPage<AquaDropFormPage.F
         String placeholder = isBlockForm ? "E.g. Example_Block_ID" : "E.g. Example_Mob_ID";
         cmd.set("#InputSourceId.PlaceholderText", placeholder);
 
+        // Sliders: event-driven via ValueChanged. Value arrives in @SliderValue.
+        evt.addEventBinding(CustomUIEventBindingType.ValueChanged, "#InputProbability", new EventData()
+                .append("Action", "probChanged")
+                .append("@SliderValue", "#InputProbability.Value"));
+
+        evt.addEventBinding(CustomUIEventBindingType.ValueChanged, "#InputQuantity", new EventData()
+                .append("Action", "qtyChanged")
+                .append("@SliderValue", "#InputQuantity.Value"));
+
+        // Save reads sourceId/dropId from TextFields; prob and qty from stored state.
         evt.addEventBinding(CustomUIEventBindingType.Activating, "#BtnSave", new EventData()
                 .append("Action", "save")
                 .append("@SourceId", "#InputSourceId.Value")
-                .append("@DropId", "#InputDropId.Value")
-                .append("@Probability", "#InputProbability.Value")
-                .append("@Quantity", "#InputQuantity.Value"));
+                .append("@DropId", "#InputDropId.Value"));
 
         evt.addEventBinding(CustomUIEventBindingType.Activating, "#BtnCancel", new EventData()
                 .append("Action", "cancel"));
@@ -81,48 +94,51 @@ public class AquaDropFormPage extends InteractiveCustomUIPage<AquaDropFormPage.F
     @Override
     public void handleDataEvent(@Nonnull Ref<EntityStore> ref, @Nonnull Store<EntityStore> store,
             @Nonnull FormEventData data) {
-        Player player = store.getComponent(ref, Player.getComponentType());
         if (data.action == null)
             return;
 
-        if ("save".equals(data.action)) {
-            try {
-                if (data.sourceId == null || data.sourceId.trim().isEmpty()) {
-                    data.sourceId = isBlockForm ? "Example_Block_ID" : "Example_Mob_ID";
-                }
-                if (data.dropId == null || data.dropId.trim().isEmpty()) {
-                    data.dropId = "Example_Item_Drop_ID";
-                }
-                // Sliders return the integer value as string; parse safely with integer
-                // fallback
-                float probability = 50f;
-                if (data.prob != null && !data.prob.isEmpty()) {
-                    probability = Float.parseFloat(data.prob);
-                }
+        switch (data.action) {
+            case "probChanged":
+                // Update stored probability from slider ValueChanged event.
+                currentProb = Math.max(0f, Math.min(100f, data.sliderValue));
+                return; // Do NOT close the page.
 
-                int quantity = 1;
-                if (data.quantity != null && !data.quantity.trim().isEmpty()) {
-                    quantity = Math.max(1, Integer.parseInt(data.quantity));
+            case "qtyChanged":
+                // Update stored quantity from slider ValueChanged event.
+                currentQty = Math.max(1, Math.min(100, (int) data.sliderValue));
+                return; // Do NOT close the page.
+
+            case "save":
+                Player player = store.getComponent(ref, Player.getComponentType());
+                try {
+                    String sourceId = (data.sourceId == null || data.sourceId.trim().isEmpty())
+                            ? (isBlockForm ? "Example_Block_ID" : "Example_Mob_ID")
+                            : data.sourceId.trim();
+
+                    String dropId = (data.dropId == null || data.dropId.trim().isEmpty())
+                            ? "Example_Item_Drop_ID"
+                            : data.dropId.trim();
+
+                    new com.aquadrop.core.registry.LocalConfigLoader(
+                            (com.aquadrop.core.registry.CustomDropRegistryImpl) AquaDrop.get().getRegistry(),
+                            AquaDrop.get())
+                            .addAndSaveDropConfig(sourceId, dropId, currentProb, currentQty, isBlockForm);
+
+                    playerRef.sendMessage(Message.empty()
+                            .insert("Drop saved successfully. (System has been automatically hot-reloaded).")
+                            .color("#FFD700"));
+                    player.getPageManager().setPage(ref, store, Page.None);
+
+                } catch (Exception ex) {
+                    playerRef.sendMessage(
+                            Message.empty().insert("Fatal error saving drop: " + ex.getMessage()).color("#FFD700"));
                 }
+                break;
 
-                // Call loader to save to JSON physically
-                new com.aquadrop.core.registry.LocalConfigLoader(
-                        (com.aquadrop.core.registry.CustomDropRegistryImpl) AquaDrop.get().getRegistry(),
-                        AquaDrop.get())
-                        .addAndSaveDropConfig(data.sourceId, data.dropId, probability, quantity, isBlockForm);
-
-                playerRef.sendMessage(Message.empty()
-                        .insert("Drop saved successfully. (System has been automatically hot-reloaded).")
-                        .color("#FFD700"));
-                player.getPageManager().setPage(ref, store, Page.None);
-
-            } catch (Exception ex) {
-                playerRef.sendMessage(
-                        Message.empty().insert("Fatal error saving drop: " + ex.getMessage()).color("#FFD700"));
-            }
-        } else if ("cancel".equals(data.action)) {
-            // Retroceder al menú principal
-            player.getPageManager().openCustomPage(ref, store, new AquaDropMenuPage(playerRef));
+            case "cancel":
+                Player p = store.getComponent(ref, Player.getComponentType());
+                p.getPageManager().openCustomPage(ref, store, new AquaDropMenuPage(playerRef));
+                break;
         }
     }
 }

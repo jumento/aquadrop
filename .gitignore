@@ -1,0 +1,22 @@
+# Gradle ignores
+.gradle/
+build/
+out/
+bin/
+
+# IDE ignores
+.idea/
+*.iml
+.vscode/
+
+# Project specifics
+idea.md
+logbot.md
+GUIA.md
+features.md
+BOT.md
+
+# Large files and proprietary server binaries
+libs/
+*.jar
+!gradle/wrapper/gradle-wrapper.jar

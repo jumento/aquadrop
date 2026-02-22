@@ -1,0 +1,68 @@
+$C = "../Common.ui";
+
+@PrimaryButtonStyle = TextButtonStyle(
+  Default: (Background: #3a7bd5, LabelStyle: (FontSize: 16, TextColor: #ffffff, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)),
+  Hovered: (Background: #4a8be5, LabelStyle: (FontSize: 16, TextColor: #ffffff, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)),
+  Pressed: (Background: #2a6bc5, LabelStyle: (FontSize: 16, TextColor: #ffffff, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center))
+);
+
+@SecondaryButtonStyle = TextButtonStyle(
+  Default: (Background: #2b3542, LabelStyle: (FontSize: 16, TextColor: #96a9be, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)),
+  Hovered: (Background: #3b4552, LabelStyle: (FontSize: 16, TextColor: #b6c9de, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center)),
+  Pressed: (Background: #1b2532, LabelStyle: (FontSize: 16, TextColor: #96a9be, RenderBold: true, HorizontalAlignment: Center, VerticalAlignment: Center))
+);
+
+Group {
+    LayoutMode: Center;
+    FlexWeight: 1;
+    Background: #000000(0.85);
+
+    Group #MainPanel {
+        LayoutMode: Top;
+        Anchor: (Width: 400, Height: 450);
+        Background: #141c26(0.98);
+        Padding: (Full: 20);
+
+        Label #FormTitle {
+            Text: "Title Form";
+            Anchor: (Height: 40);
+            Style: (FontSize: 24, TextColor: #ffffff, HorizontalAlignment: Center);
+        }
+
+        Group { Anchor: (Height: 10); }
+
+        Label { Text: "Source (Entity or Block ID)"; Anchor: (Height: 25); Style: (FontSize: 16, TextColor: #96a9be); }
+        $C.@TextField #InputSourceId { FlexWeight: 1; PlaceholderText: "E.g. Skeleton_Burnt"; }
+
+        Group { Anchor: (Height: 15); }
+
+        Label { Text: "Drop (Item ID)"; Anchor: (Height: 25); Style: (FontSize: 16, TextColor: #96a9be); }
+        $C.@TextField #InputDropId { FlexWeight: 1; PlaceholderText: "E.g. AquaAmulets_Magic_Fragment"; }
+
+        Group { Anchor: (Height: 15); }
+
+        Label { Text: "Probability (%)"; Anchor: (Height: 25); Style: (FontSize: 16, TextColor: #96a9be); }
+        $C.@TextField #InputProbability { FlexWeight: 1; PlaceholderText: "100.0"; }
+
+        Group { FlexWeight: 1; }
+
+        Group {
+            LayoutMode: Left;
+            Anchor: (Height: 40);
+
+            TextButton #BtnCancel {
+                FlexWeight: 1;
+                Text: "Cancel / Back";
+                Style: @SecondaryButtonStyle;
+            }
+
+            Group { Anchor: (Width: 10); }
+
+            TextButton #BtnSave {
+                FlexWeight: 1;
+                Text: "Save & Reload";
+                Style: @PrimaryButtonStyle;
+            }
+        }
+    }
+}

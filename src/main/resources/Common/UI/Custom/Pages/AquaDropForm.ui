@@ -19,7 +19,7 @@ Group {
 
     Group #MainPanel {
         LayoutMode: Top;
-        Anchor: (Width: 450, Height: 560);
+        Anchor: (Width: 450, Height: 580);
         Background: #141c26(0.98);
         Padding: (Full: 20);
 
@@ -42,24 +42,12 @@ Group {
         Group { Anchor: (Height: 15); }
 
         Label { Text: "Probability (0 - 100)"; Anchor: (Height: 25); Style: (FontSize: 16, TextColor: #96a9be); }
-        $C.@SliderNumberField #InputProbability {
-            @Anchor = (Width: 380);
-            Value: 50;
-            Min: 0;
-            Max: 100;
-            NumberFieldContainerAnchor: (Width: 60);
-        }
+        $C.@NumberField #InputProbability { Anchor: (Height: 38); FlexWeight: 1; Value: 50; }
 
         Group { Anchor: (Height: 15); }
 
         Label { Text: "Quantity (items)"; Anchor: (Height: 25); Style: (FontSize: 16, TextColor: #96a9be); }
-        $C.@SliderNumberField #InputQuantity {
-            @Anchor = (Width: 380);
-            Value: 1;
-            Min: 1;
-            Max: 100;
-            NumberFieldContainerAnchor: (Width: 60);
-        }
+        $C.@NumberField #InputQuantity { Anchor: (Height: 38); FlexWeight: 1; Value: 1; }
 
         Group { FlexWeight: 1; }
 
